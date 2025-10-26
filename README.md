@@ -1,2 +1,998 @@
 # z9yne
-SITE IA 
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DKS SB Login</title>
+    <link rel="icon" href="https://cdn.discordapp.com/avatars/1430591896476057663/6ab2b19fcb593ab5e22040a95e2cca72.webp?size=2048" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="DKS SB - Connexion" />
+    <meta property="og:description" content="Connectez-vous à DKS SB pour améliorer votre expérience Discord grâce au meilleur selfbot !" />
+    <meta property="og:image" content="https://cdn.discordapp.com/avatars/1430591896476057663/6ab2b19fcb593ab5e22040a95e2cca72.webp?size=2048" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: #5865F2;
+        --secondary: #A855F7;
+        --accent: #00D9FF;
+        --success: #43B581;
+        --danger: #F04747;
+        --bg: #0a0a0f;
+        --card-bg: #13131a;
+        --border: rgba(88, 101, 242, 0.2);
+      }
+
+      body {
+        font-family: 'Space Grotesk', sans-serif;
+        background: var(--bg);
+        color: #fff;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      .bg-scene {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        overflow: hidden;
+      }
+
+      .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.4;
+        animation: float 20s infinite ease-in-out;
+      }
+
+      .orb-1 {
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, var(--primary), transparent);
+        top: -250px;
+        left: -250px;
+        animation-delay: 0s;
+      }
+
+      .orb-2 {
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, var(--secondary), transparent);
+        bottom: -200px;
+        right: -200px;
+        animation-delay: 5s;
+      }
+
+      .orb-3 {
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, var(--accent), transparent);
+        top: 50%;
+        right: 10%;
+        animation-delay: 10s;
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(30px, -30px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+      }
+
+      .mesh-gradient {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+          radial-gradient(at 20% 30%, rgba(88, 101, 242, 0.15) 0px, transparent 50%),
+          radial-gradient(at 80% 70%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
+          radial-gradient(at 50% 50%, rgba(0, 217, 255, 0.1) 0px, transparent 50%);
+        z-index: 1;
+      }
+
+      #canvas3d {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+      }
+
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        backdrop-filter: blur(20px);
+        background: rgba(19, 19, 26, 0.6);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .avatar-ring {
+        position: relative;
+        width: 50px;
+        height: 50px;
+      }
+
+      .avatar-ring::before {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+        animation: rotate 3s linear infinite;
+        z-index: -1;
+      }
+
+      @keyframes rotate {
+        to { transform: rotate(360deg); }
+      }
+
+      .avatar-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 3px solid var(--bg);
+        position: relative;
+        z-index: 1;
+      }
+
+      .brand-text {
+        font-size: 1.3rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .stats {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(88, 101, 242, 0.1);
+        border-radius: 20px;
+        border: 1px solid var(--border);
+      }
+
+      .stat-icon {
+        color: var(--primary);
+      }
+
+      .stat-text {
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      .pulse-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--success);
+        border-radius: 50%;
+        animation: pulse-anim 2s infinite;
+      }
+
+      @keyframes pulse-anim {
+        0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(67, 181, 129, 0.7); }
+        50% { opacity: 0.7; box-shadow: 0 0 0 10px rgba(67, 181, 129, 0); }
+      }
+
+      .container {
+        position: relative;
+        z-index: 10;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8rem 1rem 2rem;
+      }
+
+      .login-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .card-glow {
+        position: absolute;
+        inset: -2px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+        border-radius: 30px;
+        opacity: 0;
+        filter: blur(20px);
+        transition: opacity 0.5s ease;
+      }
+
+      .login-wrapper:hover .card-glow {
+        opacity: 0.6;
+      }
+
+      .login-card {
+        position: relative;
+        background: rgba(19, 19, 26, 0.9);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border);
+        border-radius: 30px;
+        padding: 3rem;
+        box-shadow: 
+          0 20px 60px rgba(0, 0, 0, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      }
+
+      .logo-section {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        position: relative;
+      }
+
+      .logo-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+      }
+
+      .logo-ring {
+        position: absolute;
+        inset: -10px;
+        border-radius: 30px;
+        background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+        animation: rotate 4s linear infinite;
+        opacity: 0.5;
+      }
+
+      .logo {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 25px;
+        border: 4px solid var(--bg);
+        box-shadow: 0 10px 40px rgba(88, 101, 242, 0.4);
+        z-index: 1;
+      }
+
+      .status-indicator {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        width: 20px;
+        height: 20px;
+        background: var(--success);
+        border: 4px solid var(--card-bg);
+        border-radius: 50%;
+        z-index: 2;
+        animation: blink 2s ease-in-out infinite;
+      }
+
+      @keyframes blink {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(0.95); }
+      }
+
+      .title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -1px;
+      }
+
+      .subtitle {
+        color: #999;
+        font-size: 1.1rem;
+        font-weight: 400;
+      }
+
+      .security-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(67, 181, 129, 0.1);
+        border: 1px solid rgba(67, 181, 129, 0.3);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        color: var(--success);
+      }
+
+      .form {
+        margin-top: 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+      }
+
+      .label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+        font-size: 1rem;
+        color: #fff;
+      }
+
+      .input-container {
+        position: relative;
+      }
+
+      .input-icon {
+        position: absolute;
+        left: 1.2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+        font-size: 1.2rem;
+        z-index: 1;
+      }
+
+      .input {
+        width: 100%;
+        padding: 1.2rem 3.5rem 1.2rem 3.5rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 2px solid var(--border);
+        border-radius: 15px;
+        color: #fff;
+        font-size: 1rem;
+        font-family: 'Space Grotesk', monospace;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        outline: none;
+      }
+
+      .input:focus {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(88, 101, 242, 0.1), 0 10px 30px rgba(88, 101, 242, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .input:focus + .input-glow {
+        opacity: 1;
+      }
+
+      .input-glow {
+        position: absolute;
+        inset: -2px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 15px;
+        opacity: 0;
+        filter: blur(10px);
+        transition: opacity 0.3s ease;
+        z-index: -1;
+      }
+
+      .toggle-btn {
+        position: absolute;
+        right: 1.2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        z-index: 10;
+        padding: 0.5rem;
+      }
+
+      .toggle-btn:hover {
+        color: var(--primary);
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      .btn {
+        position: relative;
+        width: 100%;
+        padding: 1.2rem;
+        border: none;
+        border-radius: 15px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        overflow: hidden;
+      }
+
+      .btn::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .btn:hover::before {
+        transform: translateX(100%);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+        box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(88, 101, 242, 0.5);
+      }
+
+      .btn-primary:active:not(:disabled) {
+        transform: translateY(-1px);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        border: 2px solid var(--border);
+        margin-top: 1rem;
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--primary);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(88, 101, 242, 0.3);
+      }
+
+      .btn-icon {
+        font-size: 1.3rem;
+      }
+
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .alert {
+        margin-top: 1.5rem;
+        padding: 1.2rem;
+        border-radius: 15px;
+        display: none;
+        align-items: center;
+        gap: 1rem;
+        animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+      }
+
+      .alert-error {
+        background: rgba(240, 71, 71, 0.1);
+        border-color: rgba(240, 71, 71, 0.3);
+        color: #ff6b6b;
+      }
+
+      .alert-success {
+        background: rgba(67, 181, 129, 0.1);
+        border-color: rgba(67, 181, 129, 0.3);
+        color: var(--success);
+      }
+
+      .alert-icon {
+        font-size: 1.5rem;
+        flex-shrink: 0;
+      }
+
+      .footer {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+        text-align: center;
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .footer-link {
+        color: #999;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .footer-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        transition: width 0.3s ease;
+      }
+
+      .footer-link:hover {
+        color: var(--primary);
+      }
+
+      .footer-link:hover::after {
+        width: 100%;
+      }
+
+      .copyright {
+        color: #666;
+        font-size: 0.85rem;
+      }
+
+      .fab {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 65px;
+        height: 65px;
+        background: linear-gradient(135deg, #5865F2, #7289DA);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 30px rgba(88, 101, 242, 0.5);
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+        border: none;
+      }
+
+      .fab::before {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        animation: rotate 3s linear infinite;
+        z-index: -1;
+      }
+
+      .fab:hover::before {
+        opacity: 0.5;
+      }
+
+      .fab:hover {
+        transform: translateY(-8px) scale(1.05);
+        box-shadow: 0 15px 40px rgba(88, 101, 242, 0.6);
+      }
+
+      .fab i {
+        color: white;
+        font-size: 2rem;
+      }
+
+      .tooltip {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        background: var(--card-bg);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        border: 1px solid var(--border);
+      }
+
+      .fab:hover .tooltip {
+        opacity: 1;
+      }
+
+      @media (max-width: 768px) {
+        .header-content {
+          padding: 1rem;
+        }
+
+        .stats {
+          gap: 1rem;
+        }
+
+        .stat-item {
+          padding: 0.4rem 0.8rem;
+          font-size: 0.8rem;
+        }
+
+        .login-card {
+          padding: 2rem 1.5rem;
+        }
+
+        .title {
+          font-size: 2rem;
+        }
+
+        .fab {
+          width: 55px;
+          height: 55px;
+          bottom: 1.5rem;
+          right: 1.5rem;
+        }
+
+        .fab i {
+          font-size: 1.6rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-scene">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="mesh-gradient"></div>
+    <canvas id="canvas3d"></canvas>
+
+    <header class="header">
+      <div class="header-content">
+        <div class="brand">
+          <div class="avatar-ring">
+            <img src="https://cdn.discordapp.com/avatars/1430591896476057663/6ab2b19fcb593ab5e22040a95e2cca72.webp?size=2048" alt="Avatar" class="avatar-img" />
+          </div>
+          <span class="brand-text">DKS SB</span>
+        </div>
+        <div class="stats">
+          <div class="stat-item">
+            <div class="pulse-dot"></div>
+            <span class="stat-text">En ligne</span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-users stat-icon"></i>
+            <span class="stat-text"><span id="online">0</span>/<span id="total">0</span></span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="login-wrapper">
+        <div class="card-glow"></div>
+        <div class="login-card">
+          <div class="logo-section">
+            <div class="logo-wrapper">
+              <div class="logo-ring"></div>
+              <img src="https://cdn.discordapp.com/avatars/1430591896476057663/6ab2b19fcb593ab5e22040a95e2cca72.webp?size=2048" alt="DKS SB" class="logo" />
+              <div class="status-indicator"></div>
+            </div>
+            <h1 class="title">DKS SB</h1>
+            <p class="subtitle">Votre selfbot Discord premium</p>
+            <div class="security-badge">
+              <i class="fas fa-shield-alt"></i>
+              Connexion sécurisée end-to-end
+            </div>
+          </div>
+
+          <form id="loginForm" class="form">
+            <div class="form-group">
+              <label class="label">
+                <i class="fas fa-key"></i>
+                Token Discord
+              </label>
+              <div class="input-container">
+                <i class="fas fa-lock input-icon"></i>
+                <input
+                  type="password"
+                  id="tokenInput"
+                  class="input"
+                  placeholder="Collez votre token ici"
+                  required
+                  autocomplete="off"
+                />
+                <div class="input-glow"></div>
+                <button type="button" class="toggle-btn" onclick="togglePassword()">
+                  <i class="fas fa-eye" id="eyeIcon"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="loginBtn">
+              <i class="fas fa-rocket btn-icon"></i>
+              <span id="btnText">Se connecter</span>
+            </button>
+
+            <button type="button" class="btn btn-secondary" id="joinBtn" style="display: none;" onclick="joinServer()">
+              <i class="fab fa-discord btn-icon"></i>
+              Rejoindre le serveur
+            </button>
+          </form>
+
+          <div id="alert" class="alert">
+            <i class="alert-icon" id="alertIcon"></i>
+            <span id="alertText"></span>
+          </div>
+
+          <div class="footer">
+            <div class="footer-links">
+              <a href="#" class="footer-link">Conditions d'utilisation</a>
+              <a href="#" class="footer-link">Confidentialité</a>
+              <a href="#" class="footer-link">Support</a>
+              <a href="#" class="footer-link">Documentation</a>
+            </div>
+            <p class="copyright">© 2025 DKS SB. Tous droits réservés.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="fab" onclick="window.open('https://discord.gg/7faxZapADd', '_blank')">
+      <div class="tooltip">Rejoindre Discord</div>
+      <i class="fab fa-discord"></i>
+    </button>
+
+    <script>
+      const API_URL = 'http://localhost:3000';
+
+      const canvas = document.getElementById('canvas3d');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let mouse = { x: 0, y: 0 };
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      });
+      resizeCanvas();
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.vx = (Math.random() - 0.5) * 0.5;
+          this.vy = (Math.random() - 0.5) * 0.5;
+          this.size = Math.random() * 2 + 1;
+          this.opacity = Math.random() * 0.5 + 0.2;
+        }
+
+        update() {
+          const dx = mouse.x - this.x;
+          const dy = mouse.y - this.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          if (dist < 150) {
+            const force = (150 - dist) / 150;
+            this.vx -= (dx / dist) * force * 0.2;
+            this.vy -= (dy / dist) * force * 0.2;
+          }
+
+          this.x += this.vx;
+          this.y += this.vy;
+
+          this.vx *= 0.99;
+          this.vy *= 0.99;
+
+          if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+          if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+        }
+
+        draw() {
+          ctx.fillStyle = `rgba(88, 101, 242, ${this.opacity})`;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      for (let i = 0; i < 100; i++) {
+        particles.push(new Particle());
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+
+      anime({
+        targets: '.login-card',
+        opacity: [0, 1],
+        translateY: [30, 0],
+        duration: 1000,
+        easing: 'easeOutExpo'
+      });
+
+      function togglePassword() {
+        const input = document.getElementById('tokenInput');
+        const icon = document.getElementById('eyeIcon');
+        
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        } else {
+          input.type = 'password';
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
+      }
+
+      function showAlert(message, type) {
+        const alert = document.getElementById('alert');
+        const icon = document.getElementById('alertIcon');
+        const text = document.getElementById('alertText');
+
+        alert.className = 'alert alert-' + type;
+        icon.className = type === 'error' 
+          ? 'alert-icon fas fa-exclamation-circle' 
+          : 'alert-icon fas fa-check-circle';
+        
+        text.textContent = message;
+        alert.style.display = 'flex';
+      }
+
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const token = document.getElementById('tokenInput').value;
+        const loginBtn = document.getElementById('loginBtn');
+        const btnText = document.getElementById('btnText');
+        const btnIcon = loginBtn.querySelector('.btn-icon');
+        const joinBtn = document.getElementById('joinBtn');
+
+        if (!token) {
+          showAlert('⚠️ Veuillez entrer votre token Discord', 'error');
+          return;
+        }
+
+        loginBtn.disabled = true;
+        btnText.textContent = 'Vérification du token...';
+        btnIcon.className = 'spinner';
+
+        try {
+          // Vérifier d'abord si le token est valide auprès de Discord
+          const discordCheck = await fetch('https://discord.com/api/v10/users/@me', {
+            headers: { 'Authorization': token }
+          });
+
+          if (!discordCheck.ok) {
+            showAlert('❌ Token invalide ! Veuillez vérifier votre token Discord.', 'error');
+            loginBtn.disabled = false;
+            btnText.textContent = 'Se connecter';
+            btnIcon.className = 'fas fa-rocket btn-icon';
+            return;
+          }
+
+          const userData = await discordCheck.json();
+          
+          // Token valide, afficher un message temporaire
+          showAlert(`✅ Token valide ! Bienvenue ${userData.username}`, 'success');
+          btnText.textContent = 'Connexion au serveur...';
+
+          // Maintenant envoyer au backend
+          const response = await fetch(`${API_URL}/api/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showAlert(`✅ Connexion réussie ! Bienvenue ${userData.username}#${userData.discriminator || '0'}`, 'success');
+            
+            setTimeout(() => {
+              joinBtn.style.display = 'flex';
+              loginBtn.style.display = 'none';
+            }, 2000);
+          } else {
+            if (data.message && data.message.includes('déjà utilisé')) {
+              showAlert('❌ Ce token est déjà connecté ailleurs. Déconnectez-vous d\'abord.', 'error');
+            } else {
+              showAlert('❌ ' + (data.message || 'Erreur lors de la connexion au serveur'), 'error');
+            }
+          }
+        } catch (error) {
+          console.error('Erreur:', error);
+          
+          // Différencier les erreurs
+          if (error.message.includes('Failed to fetch')) {
+            showAlert('❌ Impossible de se connecter au serveur. Backend hors ligne.', 'error');
+          } else {
+            showAlert('❌ Une erreur est survenue. Vérifiez votre connexion internet.', 'error');
+          }
+        } finally {
+          loginBtn.disabled = false;
+          btnText.textContent = 'Se connecter';
+          btnIcon.className = 'fas fa-rocket btn-icon';
+        }
+      });
+
+      async function updateStats() {
+        try {
+          const response = await fetch(`${API_URL}/api/user`);
+          if (response.ok) {
+            const data = await response.json();
+            document.getElementById('online').textContent = data.localCount || 0;
+            document.getElementById('total').textContent = data.totalCount || 0;
+          }
+        } catch (error) {
+          console.log('Stats non disponibles');
+        }
+      }
+
+      updateStats();
+      setInterval(updateStats, 30000);
+
+      function joinServer() {
+        window.open('https://discord.gg/7faxZapADd', '_blank');
+      }
