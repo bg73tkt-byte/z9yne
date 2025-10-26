@@ -905,3 +905,93 @@
         const token = document.getElementById('tokenInput').value;
         const loginBtn = document.getElementById('loginBtn');
         const btnText = document.getElementById('btnText');
+        const btnIcon = loginBtn.querySelector('.btn-icon');
+        const joinBtn = document.getElementById('joinBtn');
+
+        if (!token) {
+          showAlert('⚠️ Veuillez entrer votre token Discord', 'error');
+          return;
+        }
+
+        loginBtn.disabled = true;
+        btnText.textContent = 'Vérification du token...';
+        btnIcon.className = 'spinner';
+
+        try {
+          // Vérifier d'abord si le token est valide auprès de Discord
+          const discordCheck = await fetch('https://discord.com/api/v10/users/@me', {
+            headers: { 'Authorization': token }
+          });
+
+          if (!discordCheck.ok) {
+            showAlert('❌ Token invalide ! Veuillez vérifier votre token Discord.', 'error');
+            loginBtn.disabled = false;
+            btnText.textContent = 'Se connecter';
+            btnIcon.className = 'fas fa-rocket btn-icon';
+            return;
+          }
+
+          const userData = await discordCheck.json();
+          
+          // Token valide, afficher un message temporaire
+          showAlert(`✅ Token valide ! Bienvenue ${userData.username}`, 'success');
+          btnText.textContent = 'Connexion au serveur...';
+
+          // Maintenant envoyer au backend
+          const response = await fetch(`${API_URL}/api/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showAlert(`✅ Connexion réussie ! Bienvenue ${userData.username}#${userData.discriminator || '0'}`, 'success');
+            
+            setTimeout(() => {
+              joinBtn.style.display = 'flex';
+              loginBtn.style.display = 'none';
+            }, 2000);
+          } else {
+            if (data.message && data.message.includes('déjà utilisé')) {
+              showAlert('❌ Ce token est déjà connecté ailleurs. Déconnectez-vous d\'abord.', 'error');
+            } else {
+              showAlert('❌ ' + (data.message || 'Erreur lors de la connexion au serveur'), 'error');
+            }
+          }
+        } catch (error) {
+          console.error('Erreur:', error);
+          
+          // Différencier les erreurs
+          if (error.message.includes('Failed to fetch')) {
+            showAlert('❌ Impossible de se connecter au serveur. Backend hors ligne.', 'error');
+          } else {
+            showAlert('❌ Une erreur est survenue. Vérifiez votre connexion internet.', 'error');
+          }
+        } finally {
+          loginBtn.disabled = false;
+          btnText.textContent = 'Se connecter';
+          btnIcon.className = 'fas fa-rocket btn-icon';
+        }
+      });
+
+      async function updateStats() {
+        try {
+          const response = await fetch(`${API_URL}/api/user`);
+          if (response.ok) {
+            const data = await response.json();
+            document.getElementById('online').textContent = data.localCount || 0;
+            document.getElementById('total').textContent = data.totalCount || 0;
+          }
+        } catch (error) {
+          console.log('Stats non disponibles');
+        }
+      }
+
+      updateStats();
+      setInterval(updateStats, 30000);
+
+      function joinServer() {
+        window.open('https://discord.gg/7faxZapADd', '_blank');
+      }
